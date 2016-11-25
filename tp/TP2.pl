@@ -43,8 +43,7 @@ totalSalaireMin([Head|Tail],Total) :- revenuMinActeur(Head, First), totalSalaire
 satisfont tous les critères de Lcriteres.
 precondition: la liste de criteres doit être définie. 
 */
-
-
+selectionActeursCriteres(Lcriteres, Lacteurs) :- findall(Act,(member(Act,Lacteurs),filtreCritere(Lcriteres, Act)),Lacteurs).
 
 /* 
 5b) 1pt. Le prédicat selectionActeursCriteresNouvelle(Lcriteres,Lacteurs,LChoisis) unifie LChoisis à la liste formée des identifiants des 
