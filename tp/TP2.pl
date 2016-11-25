@@ -31,8 +31,10 @@ filtreCritere([Head|Tail], ActId) :- A = acteur(_,_,_,_,ActId), critere(Head, A)
 /* 
 4) 0.75pt. Le predicat totalSalaireMin(LActeur,Total) calcule la somme des salaires minimuns exigés par les acteurs dont la liste (des identifiants) est spécifiée. 
 */
-
-
+revenuMinActeur(IdAct,Revenu) :- acteur(_,_,Revenu,_,IdAct).
+totalSalaireMin([],Total) :- Total = 0, !.
+totalSalaireMin([IdAct|[]],Total) :- revenuMinActeur(IdAct,Total), !.
+totalSalaireMin([Head|Tail],Total) :- revenuMinActeur(Head, First), totalSalaireMin(Tail, Sub), Total is First + Sub.
 
 /* 
 5a) 0.75pt. Le prédicat selectionActeursCriteres(Lcriteres,Lacteurs) unifie Lacteurs à la liste formée des identifiants des acteurs qui satisfont tous les critères de Lcriteres.
