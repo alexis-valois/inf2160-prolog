@@ -12,12 +12,13 @@ listeFilms(L) :- findall(X, film(X,_,_,_,_,_,_,_,_), L).
 1) 0.25pt. Le predicat listeActeurs(L) unifie L à la liste (comportant les identifiants) de tous les acteurs. 
 */
 
+listeActeurs(L) :- findall(X, acteur(_,_,_,_,X), L).
 
 /* 2) 0.25pt. Le predicat experience(IdAct,Annee,Ne) unifie Ne au nombre d'années d'expérience à l'année Annee, de l'acteur dont l"identifiant est IdAct. 
 precondition: Annee doit être définie. 
 */ 
-
-
+anneeDebut(IdAct,Adebut) :- acteur(_,_,_,date(Adebut,_,_),IdAct).
+experience(IdAct,Annee,Ne) :- anneeDebut(IdAct,Adebut), Ne is Annee-Adebut.
 
 /* 
 3) 0.75pt. Le predicat filtreCritere unifie ActId à l'identifiant du premier acteur qui verifie tous les criteres de Lc. 
