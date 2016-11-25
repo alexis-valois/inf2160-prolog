@@ -25,7 +25,9 @@ experience(IdAct,Annee,Ne) :- anneeDebut(IdAct,Adebut), Ne is Annee-Adebut.
 precondition: Lc doit etre defini. 
 */									  
 
-
+filtreCritere([], ActId) :- acteur(_,_,_,_,ActId), !.
+filtreCritere([C|[]], ActId) :- A = acteur(_,_,_,_,ActId), critere(C, A), !.
+filtreCritere([Head|Tail], ActId) :- A = acteur(_,_,_,_,ActId), critere(Head, A), filtreCritere(Tail, ActId), !.
 /* 
 4) 0.75pt. Le predicat totalSalaireMin(LActeur,Total) calcule la somme des salaires minimuns exigés par les acteurs dont la liste (des identifiants) est spécifiée. 
 */
