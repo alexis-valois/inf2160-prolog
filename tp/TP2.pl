@@ -55,14 +55,24 @@ precondition: la liste de criteres (Lcriteres) et la liste des acteurs contenant
 
 */
 
-/*Pris dans la solution de l'atelier 11*/
-nbElement([], 0).
-nbElement([_|Q], N) :- nbElement(Q,N2), N is N2 + 1.
+add(X, L, [X|L]). 
+
+del1(X, [X|L], L).
+del1(X, [Y|L], [Y|L1]) :- del1(X, L, L1), !. 
+
+insert(X,L1,L2) :- del1(X, L2, L1), !. 
+
+filtreCritereNouvelle(_, [], [], _).
+filtreCritereNouvelle(C, [A|ResteA], ActId) :- \+ critere(C, acteur(_,_,_,_,A)), filtreCritereNouvelle(C, ResteA, ActId), !.
+filtreCritereNouvelle(C, [A|_], ActId) :- critere(C, acteur(_,_,_,_,A)), ActId = A, !.
 
 selectionActeursCriteresNouvelle(_, [],[]).
 selectionActeursCriteresNouvelle([],_,[]).
+selectionActeursCriteresNouvelle([C|ResteC], Lacteurs, Lchoisis) :- filtreCritereNouvelle(C, Lacteurs, ActId), insert(ActId, [], NouvListe), del(ActId, Lacteurs, NouvActeur), selectionActeursCriteresNouvelle(ResteC, NouvActeur, NouvListe), Lchoisis = NouvListe, !.
+/*
 selectionActeursCriteresNouvelle([PremC|ResteC],[PremA|ResteA],LChoisis) :- \+ critere(PremC, acteur(_,_,_,_,PremA) ), selectionActeursCriteresNouvelle([PremC|ResteC], ResteA, SubList), append([],SubList,LChoisis), !.
 selectionActeursCriteresNouvelle([PremC|ResteC],[PremA|ResteA],LChoisis) :- critere(PremC, acteur(_,_,_,_,PremA)), selectionActeursCriteresNouvelle(ResteC, ResteA, SubList), append([PremA],SubList,LChoisis), !.
+*/
 
 /* 
 6) 1pt. Le prédicat filmsAdmissibles(ActId,LFilms) unifie LIdFilms à la liste des films (identifiants) satisfaisant les restrictions 
