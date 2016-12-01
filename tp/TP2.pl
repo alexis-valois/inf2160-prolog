@@ -52,11 +52,9 @@ le principe suivant (jusqu'à concurrence de N acteurs, N correspondant au nombr
 satisfait le premier critere de Lcriteres, le premier acteur 
 non encore sélectionné et qui satisfait le deuxième critère etc.	
 precondition: la liste de criteres (Lcriteres) et la liste des acteurs contenant leurs idenfiants (Lacteurs) doivent être définies. 
-
 */
 
-add(X, L, [X|L]). 
-
+/*Pris dans les notes de cours*/
 del1(X, [X|L], L).
 del1(X, [Y|L], [Y|L1]) :- del1(X, L, L1), !. 
 
