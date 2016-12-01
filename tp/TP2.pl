@@ -73,14 +73,6 @@ selectionActeursCriteresNouvelle([C|ResteC], Lacteurs, Lchoisis) :-
   !.
 selectionActeursCriteresNouvelle([],_,[]).
 
-
-/*
-selectionActeursCriteresNouvelle(_, [],[]).
-selectionActeursCriteresNouvelle([],_,[]).
-selectionActeursCriteresNouvelle([PremC|ResteC],[PremA|ResteA],LChoisis) :- \+ critere(PremC, acteur(_,_,_,_,PremA) ), selectionActeursCriteresNouvelle([PremC|ResteC], ResteA, SubList), append([],SubList,LChoisis), !.
-selectionActeursCriteresNouvelle([PremC|ResteC],[PremA|ResteA],LChoisis) :- critere(PremC, acteur(_,_,_,_,PremA)), selectionActeursCriteresNouvelle(ResteC, ResteA, SubList), append([PremA],SubList,LChoisis), !.
-*/
-
 /* 
 6) 1pt. Le prédicat filmsAdmissibles(ActId,LFilms) unifie LIdFilms à la liste des films (identifiants) satisfaisant les restrictions 
 de l'acteur ActId. 
