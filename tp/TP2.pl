@@ -69,9 +69,9 @@ selectionActeursCriteresNouvelle([C|ResteC], Lacteurs, Lchoisis) :-
   filtreCritereNouvelle(C, Lacteurs, ActId), 
   del1(ActId, Lacteurs, NouvActeur), 
   selectionActeursCriteresNouvelle(ResteC, NouvActeur, NouvChoisis),
-  append([], NouvChoisis, Lchoisis),
+  Lchoisis = [ActId|NouvChoisis],
   !.
-selectionActeursCriteresNouvelle([],_,_).
+selectionActeursCriteresNouvelle([],_,[]).
 
 
 /*
