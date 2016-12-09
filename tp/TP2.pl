@@ -88,13 +88,22 @@ préconditions: IdFilm doit être défini
 selectionActeursFilm(IdFilm,Lacteurs) :- listeActeurs(A), findall(ActId,(member(ActId,A),filtreRestrictions(ActId, IdFilm)),Lacteurs).
 
 /* 
-7b) 1pt. Le prédicat selectionNActeursFilm2ActeursFilm2(IdFilm,Lacteurs) unifie Lacteurs à la liste formée des identifiants d'acteurs 
+7b) 1pt. Le prédicat selectionNActeursFilm2(IdFilm,Lacteurs) unifie Lacteurs à la liste formée des identifiants d'acteurs 
 pour lesquels le film de d'identifiant IdFilm satisfait les restrictions.
           Si le nombre total des acteurs qualifiés est inférieur au nombre d'acteurs du film, la liste retournée (Lacteurs) devra 
           contenir l'atome pasAssezDacteur.
 préconditions: IdFilm doit être défini 
 */
 
+/*
+trim(_, N, SubList) :- length(SubList, N), !.
+trim([X|XS], N, SubList) :- SubList = [X], trim(XS, N, SubList).
+*/
+
+trim([X|XS], N, SubList) :- append([X], _, SubList), trim(XS,N,SubList), length(Sublist, N), !.
+
+selectionNActeursFilm2(film(IdFilm,_,_,_,_,_,_,N,_),pasAssezDacteur) :- selectionActeursFilm(IdFilm,Lacteurs), length(Lacteurs, NbAct), N > NbAct, !.  
+selectionNActeursFilm2(film(IdFilm,_,_,_,_,_,_,N,_),Lacteurs) :- selectionActeursFilm(IdFilm,LacteursComplet), trim(LacteursComplet, N, Lacteurs).
 
 /* 
 8) 1pt. Le prédicat acteurJoueDansFilm(Lacteurs, IdFilm) ajoute dans la base de faits tous les acteurs (identifiants) jouant dans 
