@@ -76,6 +76,8 @@ selectionActeursCriteresNouvelle([],_,[]).
 de l'acteur ActId. 
 */
 
+filtreRestrictions(ActId, Film) :- PFilm=..[film, Film,_,_,_,_,_,_,_,_], PActeur=..[ActId, PFilm], call(PActeur), !.
+filmsAdmissibles(ActId, LFilms) :- listeFilms(L), findall(Film,(member(Film,L),filtreRestrictions(ActId, Film)),LFilms).
 
 /* 
 7a) 1pt. Le prédicat selectionActeursFilm(IdFilm,Lacteurs) unifie Lacteurs à la liste formée des identifiants d'acteurs pour lesquels 
