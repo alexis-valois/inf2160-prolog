@@ -85,6 +85,7 @@ le film de d'identifiant IdFilm satisfait les restrictions.
 préconditions: IdFilm doit être défini 
 */
 
+selectionActeursFilm(IdFilm,Lacteurs) :- listeActeurs(A), findall(ActId,(member(ActId,A),filtreRestrictions(ActId, IdFilm)),Lacteurs).
 
 /* 
 7b) 1pt. Le prédicat selectionNActeursFilm2ActeursFilm2(IdFilm,Lacteurs) unifie Lacteurs à la liste formée des identifiants d'acteurs 
