@@ -105,6 +105,8 @@ selectionNActeursFilm2(IdFilm,Lacteurs) :- film(IdFilm,_,_,_,_,_,_,N,_), selecti
 le film de titre spécifié (IdFilm) 
 */
 
+acteurJoueDansFilm([X|[]], IdFilm) :- assert(joueDans(X, IdFilm)),!.
+acteurJoueDansFilm([X|XS], IdFilm) :- assert(joueDans(X, IdFilm)), acteurJoueDansFilm(XS, IdFilm).
 
 /* 
 9a) 1pt. Le prédicat affectationDesRolesSansCriteres(IdFilm) a pour but de distribuer les rôles à une liste d'acteurs pouvant jouer 
