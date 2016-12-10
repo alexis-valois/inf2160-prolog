@@ -42,7 +42,7 @@ test7a4 :- selectionActeursFilm(coupe,[maxi]).
 
 % Tests pour 'selectionActeursFilm'.
 test7b1 :- selectionNActeursFilm2(wind2,[merryl, maxi]).
-test7b2 :- selectionNActeursFilm2(avengers,[sharon, robert]).
+test7b2 :- selectionNActeursFilm2(avengers,[arnold, sharon]).
 test7b3 :- selectionNActeursFilm2(wind,[merryl, maxi, julia, reno]).
 test7b4 :- selectionNActeursFilm2(sherlock,[merryl]).
 

@@ -94,16 +94,11 @@ pour lesquels le film de d'identifiant IdFilm satisfait les restrictions.
           contenir l'atome pasAssezDacteur.
 préconditions: IdFilm doit être défini 
 */
+trim([X|_], 1, SubList) :- SubList = [X].
+trim([X|XS], N, SubList) :- N2 is N - 1, trim(XS,N2,NewSubList), SubList = [X|NewSubList], !.
 
-/*
-trim(_, N, SubList) :- length(SubList, N), !.
-trim([X|XS], N, SubList) :- SubList = [X], trim(XS, N, SubList).
-*/
-
-trim([X|XS], N, SubList) :- append([X], _, SubList), trim(XS,N,SubList), length(Sublist, N), !.
-
-selectionNActeursFilm2(film(IdFilm,_,_,_,_,_,_,N,_),pasAssezDacteur) :- selectionActeursFilm(IdFilm,Lacteurs), length(Lacteurs, NbAct), N > NbAct, !.  
-selectionNActeursFilm2(film(IdFilm,_,_,_,_,_,_,N,_),Lacteurs) :- selectionActeursFilm(IdFilm,LacteursComplet), trim(LacteursComplet, N, Lacteurs).
+selectionNActeursFilm2(IdFilm,pasAssezDacteur) :- film(IdFilm,_,_,_,_,_,_,N,_), selectionActeursFilm(IdFilm,Lacteurs), length(Lacteurs, NbAct), N > NbAct, !.  
+selectionNActeursFilm2(IdFilm,Lacteurs) :- film(IdFilm,_,_,_,_,_,_,N,_), selectionActeursFilm(IdFilm,LacteursComplet), trim(LacteursComplet, N, Lacteurs), !.
 
 /* 
 8) 1pt. Le prédicat acteurJoueDansFilm(Lacteurs, IdFilm) ajoute dans la base de faits tous les acteurs (identifiants) jouant dans 
