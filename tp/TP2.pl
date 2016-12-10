@@ -131,13 +131,32 @@ précondition: L'identifiant du film doit être défini.
 sommeSalaire([X|[]], S) :- acteur(_,_,S,_,X), !. 
 sommeSalaire([X|XS], S) :- acteur(_,_,R,_,X), sommeSalaire(XS, NewS), S is R + NewS, !. 
 
-affectationDesRolesSansCriteres(IdFilm) :- joueDans(_,IdFilm), !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,pasAssezDacteur), !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,Lacteurs), sommeSalaire(Lacteurs, S), film(IdFilm,_,_,_,_,_,_,_,B), S > B, !,fail.
 affectationDesRolesSansCriteres(IdFilm) :- 
-  selectionNActeursFilm2(IdFilm,Lacteurs), 
+  listeActeurs(A), 
+  findall(ActId,(member(ActId,A),joueDans(ActId,IdFilm)),Lacteurs), 
+  length(Lacteurs, Na),
+  film(IdFilm,_,_,_,_,_,_,N,_),
+  Na =:= N,
+  !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), write('affectationDesRolesSansCriteres : pasDeRealisateur'), nl, !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), write('affectationDesRolesSansCriteres : pasDeProducteur'), nl, !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,pasAssezDacteur), write('affectationDesRolesSansCriteres : pasAssezDacteur'), nl, !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- 
+  listeActeurs(A), 
+  findall(ActId,(member(ActId,A),joueDans(ActId,IdFilm)),LacteursAssignes),
+  selectionNActeursFilm2(IdFilm,LacteursAdmissibles),
+  subtract(LacteursAdmissibles, LacteursAssignes, Lacteurs),
+  sommeSalaire(Lacteurs, S), 
+  film(IdFilm,_,_,_,_,_,_,_,B),
+  write('Budget : '), write(B),nl,
+  write('Somme Salaire : '), write(S),nl,
+  S > B, 
+  write('S > B'), nl,!,fail.
+affectationDesRolesSansCriteres(IdFilm) :- 
+  listeActeurs(A), 
+  findall(ActId,(member(ActId,A),joueDans(ActId,IdFilm)),LacteursAssignes),
+  selectionNActeursFilm2(IdFilm,LacteursAdmissibles),
+  subtract(LacteursAdmissibles, LacteursAssignes, Lacteurs), 
   sommeSalaire(Lacteurs, S), 
   film(IdFilm,T,Type,R,P,Ci,D,N,Bi),
   retract(film(IdFilm,_,_,_,_,_,_,_,_)),
@@ -172,7 +191,7 @@ affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis) :-
   listeActeurs(A),
   findall(ActId,(member(ActId,A),filtreRestrictions(ActId, IdFilm)),Lacteurs), 
   selectionActeursCriteresNouvelle(Lcriteres,Lacteurs,LChoisis),!.
-/*affectationDesRolesCriteres(IdFilm,[X|XS],LChoisis) :- */
+
 /*
 10) 2pts. Le prédicat affectationDesRoles(IdFilm, Lcriteres) a pour but de distribuer les rôles à une liste d'acteurs pouvant 
 jouer dans le film et satisfaisant
@@ -200,7 +219,43 @@ Attention:
 2) Si la liste Lcriteres est vide, c'est aussi le principe de affectationDesRolesSansCriteres(IdFilm) de la question 9a qui s'applique.
 */
 
+affectationDesRoles(IdFilm,_) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
+affectationDesRoles(IdFilm,_) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+affectationDesRoles(IdFilm, Lcriteres) :- 
+  film(IdFilm,_,_,_,_,_,_,_,B), 
+  affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis),
+  sommeSalaire(LChoisis, S),
+  S > B,
+  !,
+  fail.
+affectationDesRoles(IdFilm, Lcriteres) :- 
+  film(IdFilm,T,Type,R,P,Ci,D,N,Bi), 
+  affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis),
+  length(LChoisis, N2),
+  N > N2,
+  /*Il faut venir compléter LChoisis ici directement, avec le prochain*/
 
+  sommeSalaire(LChoisis, S),
+  retract(film(IdFilm,_,_,_,_,_,_,_,_)),
+  Cn is Ci - (Bi - S),
+  assert(film(IdFilm,T,Type,R,P,Cn,D,N,S)),
+  write('N > N2'), nl,
+  acteurJoueDansFilm(LChoisis, IdFilm),
+  write('acteurJoueDansFilm'), nl,
+  /*affectationDesRolesSansCriteres(IdFilm),*/
+  /*Fail car budget du film est maintenant 1 (salaireMin de maxi)*/
+  write('affectationDesRolesSansCriteres, devrait cut ici.'), nl,
+  !.
+affectationDesRoles(IdFilm, Lcriteres) :- 
+  film(IdFilm,T,Type,R,P,Ci,D,N,Bi), 
+  affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis),
+  sommeSalaire(LChoisis, S),
+  retract(film(IdFilm,_,_,_,_,_,_,_,_)),
+  Cn is Ci - (Bi - S),
+  assert(film(IdFilm,T,Type,R,P,Cn,D,N,S)),
+  write('N == N2'), nl,
+  acteurJoueDansFilm(LChoisis, IdFilm),
+  !.
 
 /* 11) 1,25 pts. Le prédicat produire(NomMaison,IdFilm) vérifie si la maison peut produire le film identifié. Il vérifie si le 
 budget de la maison 
@@ -213,14 +268,14 @@ production est possible,
  produire le film. 
 */
 
- 
+produire(NomMaison,IdFilm). 
 							 
 /* 12) 0.75pt. Le prédicat plusieursFilms(N,Lacteurs) unifie Acteurs à la liste des acteurs (comportant leurs NOMS), qui jouent 
 dans au moins N films.
 N doit être lié à une valeur au moment de la requête de résolution du but 
 */
 
-
+plusieursFilms(N,Lacteurs).
 
 /* 13) 1.25pt. Les films réalisés et produits doivent maintenant être distribués dans les cinémas. On vous demande définir le 
 prédicat distribuerFilm(IdFilm,PrixEntree) qui envoie le film identifié par IdFilm à tous les cinémas en spécifiant le prix d'entrée suggéré. 
@@ -228,4 +283,5 @@ Ce prédicat doit modifier la base de connaissances en ajoutant le triplet  (IdF
 des cinémas déjà existants.
  */
 
+distribuerFilm(IdFilm,PrixEntree).
 					
