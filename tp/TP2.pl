@@ -58,10 +58,9 @@ precondition: la liste de criteres (Lcriteres) et la liste des acteurs contenant
 del1(X, [X|L], L).
 del1(X, [Y|L], [Y|L1]) :- del1(X, L, L1), !. 
 
-filtreCritereNouvelle(_, [], _).
+filtreCritereNouvelle(_, [], _) :- !, fail.
 filtreCritereNouvelle(C, [A|ResteA], ActId) :- \+ critere(C, acteur(_,_,_,_,A)), filtreCritereNouvelle(C, ResteA, ActId), !.
 filtreCritereNouvelle(C, [A|_], ActId) :- critere(C, acteur(_,_,_,_,A)), ActId = A, !.
-
 
 selectionActeursCriteresNouvelle([C|ResteC], Lacteurs, Lchoisis) :- 
   filtreCritereNouvelle(C, Lacteurs, ActId), 
@@ -166,8 +165,14 @@ ne peut dépasser le nombre de critères dans Lcriteres.
            Le nombre maximum d'acteurs choisis est donc égal à la taille de la liste Lcriteres.
 */
 
-
-
+affectationDesRolesCriteres(_,[],_) :- !, fail.
+affectationDesRolesCriteres(IdFilm,_,_) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
+affectationDesRolesCriteres(IdFilm,_,_) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis) :- 
+  listeActeurs(A),
+  findall(ActId,(member(ActId,A),filtreRestrictions(ActId, IdFilm)),Lacteurs), 
+  selectionActeursCriteresNouvelle(Lcriteres,Lacteurs,LChoisis),!.
+/*affectationDesRolesCriteres(IdFilm,[X|XS],LChoisis) :- */
 /*
 10) 2pts. Le prédicat affectationDesRoles(IdFilm, Lcriteres) a pour but de distribuer les rôles à une liste d'acteurs pouvant 
 jouer dans le film et satisfaisant
