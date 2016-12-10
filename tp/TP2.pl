@@ -129,6 +129,22 @@ Le prédicat échoue et ne modifie rien si une des conditions suivantes est vér
 précondition: L'identifiant du film doit être défini.
 */
 
+sommeSalaire([X|[]], S) :- acteur(_,_,S,_,X), !. 
+sommeSalaire([X|XS], S) :- acteur(_,_,R,_,X), sommeSalaire(XS, NewS), S is R + NewS, !. 
+
+affectationDesRolesSansCriteres(IdFilm) :- joueDans(_,IdFilm), !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,pasAssezDacteur), !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,Lacteurs), sommeSalaire(Lacteurs, S), film(IdFilm,_,_,_,_,_,_,_,B), S > B, !,fail.
+affectationDesRolesSansCriteres(IdFilm) :- 
+  selectionNActeursFilm2(IdFilm,Lacteurs), 
+  sommeSalaire(Lacteurs, S), 
+  film(IdFilm,T,Type,R,P,Ci,D,N,Bi),
+  retract(film(IdFilm,_,_,_,_,_,_,_,_)),
+  Cn is Ci - (Bi - S),
+  assert(film(IdFilm,T,Type,R,P,Cn,D,N,S)),
+  acteurJoueDansFilm(Lacteurs, IdFilm), !.
 
 /*
 9b) 1pt. Le prédicat affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis) unifie LChoisis à la liste d'acteurs satisfaisant aux 
