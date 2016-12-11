@@ -284,7 +284,17 @@ dans au moins N films.
 N doit être lié à une valeur au moment de la requête de résolution du but 
 */
 
-plusieursFilms(N,Lacteurs).
+nombreFilmsActeur(NomAct, N) :- 
+  listeFilms(F),
+  acteur(NomAct,_,_,_,IdAct),
+  findall(IdFilm,(member(IdFilm,F),joueDans(IdAct,IdFilm)),Lfilms), 
+  length(Lfilms, N).
+
+listeNomsActeurs(L) :- findall(X, acteur(X,_,_,_,_), L).
+
+plusieursFilms(N,Lacteurs) :- 
+  listeNomsActeurs(A),
+  findall(NomAct,(member(NomAct,A),nombreFilmsActeur(NomAct,N2), N2 >= N),Lacteurs).
 
 /* 13) 1.25pt. Les films réalisés et produits doivent maintenant être distribués dans les cinémas. On vous demande définir le 
 prédicat distribuerFilm(IdFilm,PrixEntree) qui envoie le film identifié par IdFilm à tous les cinémas en spécifiant le prix d'entrée suggéré. 

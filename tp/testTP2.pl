@@ -85,7 +85,7 @@ test122 :- plusieursFilms(1,['Schawrznnegger Arnold', 'Streep Meryll', 'Farfelu 
 main :- write('Début des tests...'), nl, write('======================'), nl, test11, test21, test22, test31, test32, test41, test5a1, test5a2, test5a3, 
            test5b1, test5b2, test5b3, test5b4, test61, test62, test63, test7a1, test7a2, test7a3,test7a4, test7b1, test7b2, test7b3, test7b4, test9a1, 
 		   test9a2, test9a3, test8, test9b1, test9b2, test9b3, test9b4, test9b5, test101, test102, test103, test104, test105, test106, test131, test132,
-		   %test111, test112, test113, test121, test122,%
+		   test111, test112, test113, test121, test122,
 		   nl, write('Fin des tests.'), nl, write('======================').
 %sous SWI: ?- qsave_program('testTP2.exe', [goal(main), stand_alone(true)]).
 %sur ligne de commande: plcon -o testTP2.exe -c testTP2.pl --goal=main
