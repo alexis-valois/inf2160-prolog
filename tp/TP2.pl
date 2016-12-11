@@ -219,6 +219,7 @@ Attention:
 
 affectationDesRoles(IdFilm,_) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
 affectationDesRoles(IdFilm,_) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+affectationDesRoles(IdFilm,[]) :- affectationDesRolesSansCriteres(IdFilm), !.
 affectationDesRoles(IdFilm, Lcriteres) :- 
   film(IdFilm,_,_,_,_,_,_,_,B), 
   affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis),
