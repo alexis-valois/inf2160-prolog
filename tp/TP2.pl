@@ -138,9 +138,9 @@ affectationDesRolesSansCriteres(IdFilm) :-
   film(IdFilm,_,_,_,_,_,_,N,_),
   Na =:= N,
   !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), write('affectationDesRolesSansCriteres : pasDeRealisateur'), nl, !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), write('affectationDesRolesSansCriteres : pasDeProducteur'), nl, !, fail.
-affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,pasAssezDacteur), write('affectationDesRolesSansCriteres : pasAssezDacteur'), nl, !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+affectationDesRolesSansCriteres(IdFilm) :- selectionNActeursFilm2(IdFilm,pasAssezDacteur), !, fail.
 affectationDesRolesSansCriteres(IdFilm) :- 
   listeActeurs(A), 
   findall(ActId,(member(ActId,A),joueDans(ActId,IdFilm)),LacteursAssignes),
@@ -148,10 +148,8 @@ affectationDesRolesSansCriteres(IdFilm) :-
   subtract(LacteursAdmissibles, LacteursAssignes, Lacteurs),
   sommeSalaire(Lacteurs, S), 
   film(IdFilm,_,_,_,_,_,_,_,B),
-  write('Budget : '), write(B),nl,
-  write('Somme Salaire : '), write(S),nl,
   S > B, 
-  write('S > B'), nl,!,fail.
+  !,fail.
 affectationDesRolesSansCriteres(IdFilm) :- 
   listeActeurs(A), 
   findall(ActId,(member(ActId,A),joueDans(ActId,IdFilm)),LacteursAssignes),
@@ -233,18 +231,17 @@ affectationDesRoles(IdFilm, Lcriteres) :-
   affectationDesRolesCriteres(IdFilm,Lcriteres,LChoisis),
   length(LChoisis, N2),
   N > N2,
-  /*Il faut venir compléter LChoisis ici directement, avec le prochain*/
-
-  sommeSalaire(LChoisis, S),
+  listeActeurs(A),
+  findall(ActId,(member(ActId,A),filtreRestrictions(ActId, IdFilm)),Lacteurs), 
+  subtract(Lacteurs, LChoisis, LacteursAdmissibles),
+  M is N - N2,
+  trim(LacteursAdmissibles, M, LacteursAdd),
+  append(LChoisis, LacteursAdd, LChoisisComplet),
+  sommeSalaire(LChoisisComplet, S),
   retract(film(IdFilm,_,_,_,_,_,_,_,_)),
   Cn is Ci - (Bi - S),
   assert(film(IdFilm,T,Type,R,P,Cn,D,N,S)),
-  write('N > N2'), nl,
-  acteurJoueDansFilm(LChoisis, IdFilm),
-  write('acteurJoueDansFilm'), nl,
-  /*affectationDesRolesSansCriteres(IdFilm),*/
-  /*Fail car budget du film est maintenant 1 (salaireMin de maxi)*/
-  write('affectationDesRolesSansCriteres, devrait cut ici.'), nl,
+  acteurJoueDansFilm(LChoisisComplet, IdFilm),
   !.
 affectationDesRoles(IdFilm, Lcriteres) :- 
   film(IdFilm,T,Type,R,P,Ci,D,N,Bi), 
