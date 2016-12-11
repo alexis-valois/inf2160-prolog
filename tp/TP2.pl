@@ -105,7 +105,7 @@ le film de titre spécifié (IdFilm)
 */
 
 acteurJoueDansFilm([X|[]], IdFilm) :- assert(joueDans(X, IdFilm)),!.
-acteurJoueDansFilm([X|XS], IdFilm) :- assert(joueDans(X, IdFilm)), acteurJoueDansFilm(XS, IdFilm).
+acteurJoueDansFilm([X|XS], IdFilm) :- assert(joueDans(X, IdFilm)), acteurJoueDansFilm(XS, IdFilm),!.
 
 /* 
 9a) 1pt. Le prédicat affectationDesRolesSansCriteres(IdFilm) a pour but de distribuer les rôles à une liste d'acteurs pouvant jouer 
@@ -271,7 +271,7 @@ produire(_,IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
 produire(_,IdFilm) :- \+ film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
 produire(NomMaison, IdFilm) :- 
   maison(NomMaison,B), 
-  film(IdFilm,T,Type,R,P,C,D,N,Bi), 
+  film(IdFilm,T,Type,R,_,C,D,N,Bi), 
   NouvB is B - C,
   retract(maison(NomMaison,B)),
   assert(maison(NomMaison,NouvB)),
