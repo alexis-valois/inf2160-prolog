@@ -266,7 +266,18 @@ production est possible,
  produire le film. 
 */
 
-produire(NomMaison,IdFilm). 
+produire(NomMaison,IdFilm) :- maison(NomMaison,B), film(IdFilm,_,_,_,_,C,_,_,_), B < C, !, fail.  
+produire(_,IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
+produire(_,IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+produire(NomMaison, IdFilm) :- 
+  maison(NomMaison,B), 
+  film(IdFilm,T,Type,R,P,C,D,N,Bi), 
+  NouvB is B - C,
+  retract(maison(NomMaison,B)),
+  assert(maison(NomMaison,NouvB)),
+  retract(film(IdFilm,_,_,_,_,_,_,_,_)),
+  assert(film(IdFilm,T,Type,R,NomMaison,C,D,N,Bi)), 
+  !.
 							 
 /* 12) 0.75pt. Le prédicat plusieursFilms(N,Lacteurs) unifie Acteurs à la liste des acteurs (comportant leurs NOMS), qui jouent 
 dans au moins N films.
