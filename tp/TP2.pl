@@ -292,5 +292,25 @@ Ce prédicat doit modifier la base de connaissances en ajoutant le triplet  (IdF
 des cinémas déjà existants.
  */
 
-distribuerFilm(IdFilm,PrixEntree).
-					
+listeCinemas(C) :- findall(X, cinema(X, _, _), C).
+
+ajouterFilmRepetoire(IdCin, IdFilm, PrixEntree) :- 
+  cinema(IdCin, N, Rep),
+  append(Rep, [(IdFilm, 0, PrixEntree)], NouvRep),
+  retract(cinema(IdCin, N, Rep)),
+  assert(cinema(IdCin, N, NouvRep)),
+  !.
+
+/*Depuis les notes de cours*/
+map(NomFonction, [H|T], Arg1, Arg2) :- 
+  Fonction=..[NomFonction, H, Arg1, Arg2],
+  call(Fonction),
+  map(NomFonction, T, Arg1, Arg2).
+map(_,[],_,_).
+
+distribuerFilm(IdFilm,_) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail. 
+distribuerFilm(IdFilm,_) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail. 
+distribuerFilm(IdFilm,PrixEntree) :- 
+  listeCinemas(Lcinemas),
+  map(ajouterFilmRepetoire,Lcinemas, IdFilm, PrixEntree),
+  !.
