@@ -268,7 +268,7 @@ production est possible,
 
 produire(NomMaison,IdFilm) :- maison(NomMaison,B), film(IdFilm,_,_,_,_,C,_,_,_), B < C, !, fail.  
 produire(_,IdFilm) :- film(IdFilm,_,_,pasDeRealisateur,_,_,_,_,_), !, fail.
-produire(_,IdFilm) :- film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
+produire(_,IdFilm) :- \+ film(IdFilm,_,_,_,pasDeProducteur,_,_,_,_), !, fail.
 produire(NomMaison, IdFilm) :- 
   maison(NomMaison,B), 
   film(IdFilm,T,Type,R,P,C,D,N,Bi), 
